@@ -115,7 +115,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy files to staging directory'
   inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/_RX.Nyss'
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
     Contents: '*.log'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/vars'
 
