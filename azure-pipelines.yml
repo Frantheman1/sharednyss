@@ -112,5 +112,19 @@ steps:
     Contents: '*.sql'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/scripts'
 
+- task: CopyFiles@2
+  displayName: 'Copy files to staging directory'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish build artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'release-artifacts'
+    publishLocation: 'Container'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
