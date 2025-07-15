@@ -116,7 +116,7 @@ steps:
   displayName: 'Copy files to staging directory'
   inputs:
     SourceFolder: '$(System.DefaultWorkingDirectory)'
-    Contents: '**'
+    Contents: '*.log'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
