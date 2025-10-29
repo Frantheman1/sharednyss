@@ -112,12 +112,6 @@ steps:
     Contents: '*.sql'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/scripts'
 
-- task: CopyFiles@2
-  displayName: 'Copy files to staging directory'
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)'
-    Contents: '*.log'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/vars'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
