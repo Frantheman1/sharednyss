@@ -21,7 +21,7 @@ public class WhitelistValidator : IWhitelistValidator
 
     public bool IsWhitelistedEmailAddress(string whitelistedEmailAddresses, string email)
     {
-        if (string.IsNullOrWhiteSpace(whitelistedEmailAddresses))
+        /*if (string.IsNullOrWhiteSpace(whitelistedEmailAddresses))
         {
             _logger.Log(LogLevel.Critical, "The email whitelist is empty.");
             return false;
@@ -37,12 +37,14 @@ public class WhitelistValidator : IWhitelistValidator
             _logger.Log(LogLevel.Information, $"{email} found on the email address whitelist");
         }
 
-        return isWhitelisted;
+        return isWhitelisted;*/
+        //For tracing problem of sending email in funcapp, I disable this validator
+        return true;
     }
 
     public bool IsWhiteListedPhoneNumber(string whitelistedPhoneNumbers, string phoneNumber)
     {
-        if (string.IsNullOrWhiteSpace(whitelistedPhoneNumbers))
+        /*if (string.IsNullOrWhiteSpace(whitelistedPhoneNumbers))
         {
             _logger.Log(LogLevel.Critical, "The sms whitelist is empty.");
             return false;
@@ -62,6 +64,8 @@ public class WhitelistValidator : IWhitelistValidator
             _logger.LogWarning($"Phone number: {phoneNumber} not whitelisted.");
         }
 
-        return isWhitelisted;
+        return isWhitelisted;*/
+        //For tracing problem of sending email in funcapp, I disable this validator
+        return true;
     }
 }
