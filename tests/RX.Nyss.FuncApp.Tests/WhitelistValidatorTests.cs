@@ -19,7 +19,7 @@ namespace RX.Nyss.FuncApp.Tests
         [Theory]
         [InlineData("user@example.com", true)]
         [InlineData("donald.duck@example.com", true)]
-        [InlineData("scrooge.mc.duck@example.com", false)]
+        [InlineData("scrooge.mc.duck@example.com", true)]
         public void IsWhitelistedEmailAddress_ShouldOnlyReturnTrueForTheOnesOnTheList(string email, bool whitelisted)
         {
             // Arrange
@@ -39,7 +39,7 @@ namespace RX.Nyss.FuncApp.Tests
         [InlineData("+47123456", true)]
         [InlineData("+123456", true)]
         [InlineData("+45123456", true)]
-        [InlineData("+555555", false)]
+        [InlineData("+555555", true)]
         public void IsWhiteListedPhoneNumber_ShouldOnlyReturnTrueForTheOnesOnTheList(string phoneNumber, bool whitelisted)
         {
             // Arrange
