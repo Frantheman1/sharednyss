@@ -163,7 +163,7 @@ export const CorrectReportsTable = ({
               <TableCell align="center" style={{ width: "6%", minWidth: 185 }}>
                 {strings(stringKeys.reports.list.status)}
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell align="center" style={{ width: "12%" }}>
                 {strings(stringKeys.reports.list.dataCollectorDisplayName)}
               </TableCell>
               <TableCell style={{ width: "20%" }}>
@@ -172,22 +172,22 @@ export const CorrectReportsTable = ({
               <TableCell style={{ width: "14%" }}>
                 {strings(stringKeys.reports.list.healthRisk)}
               </TableCell>
-              <TableCell style={{ width: "7%" }}>
+              <TableCell align="center" style={{ width: "5%" }}>
                 {strings(stringKeys.reports.list.malesBelowFive)}
               </TableCell>
-              <TableCell style={{ width: "8%" }}>
+              <TableCell align="center" style={{ width: "5%" }}>
                 {strings(stringKeys.reports.list.malesAtLeastFive)}
               </TableCell>
-              <TableCell style={{ width: "7%" }}>
+              <TableCell align="center" style={{ width: "5%" }}>
                 {strings(stringKeys.reports.list.femalesBelowFive)}
               </TableCell>
-              <TableCell style={{ width: "8%" }}>
+              <TableCell align="center" style={{ width: "5%" }}>
                 {strings(stringKeys.reports.list.femalesAtLeastFive)}
               </TableCell>
               {filters.dataCollectorType ===
                 DataCollectorType.collectionPoint && (
                 <Fragment>
-                  <TableCell style={{ width: "10%", minWidth: "50px" }}>
+                  <TableCell align="center" style={{ width: "6%", minWidth: "50px" }}>
                     {strings(stringKeys.reports.list.referredCount)}
                   </TableCell>
                   
@@ -200,7 +200,7 @@ export const CorrectReportsTable = ({
             {list.sort(sortByReportStatus).map((row) => (
               <TableRow key={row.id} hover>
                 <TableCell>
-                  {dayjs(row.dateTime).format("YYYY-MM-DD HH:mm")}
+                  <span>{dayjs(row.dateTime).format("YYYY-MM-DD HH:mm")}</span>
                 </TableCell>
                 <TableCell align="center">
                   {row.isActivityReport ? (
@@ -209,23 +209,25 @@ export const CorrectReportsTable = ({
                     <ReportStatusChip report={row} rtl={rtl} />
                   )}
                 </TableCell>
-                <TableCell className={styles.phoneNumber}>
+                <TableCell align="center" className={styles.phoneNumber}>
                   {renderDataCollectorDisplayName(row)}
                 </TableCell>
                 <TableCell>
-                  {dashIfEmpty(row.region, row.district, row.village, row.zone)}
-                </TableCell>
-                <TableCell>{dashIfEmpty(row.healthRiskName)}</TableCell>
+                {dashIfEmpty(row.region, row.district, row.village, row.zone)}
+              </TableCell>
                 <TableCell>
+                  {dashIfEmpty(row.healthRiskName)}
+                </TableCell>
+                <TableCell align="center">
                   {renderReportValue(row.countMalesBelowFive, isDataCollectionPointTable)}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {renderReportValue(row.countMalesAtLeastFive, isDataCollectionPointTable)}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {renderReportValue(row.countFemalesBelowFive, isDataCollectionPointTable)}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {renderReportValue(row.countFemalesAtLeastFive, isDataCollectionPointTable)}
                 </TableCell>
                 {isDataCollectionPointTable && (

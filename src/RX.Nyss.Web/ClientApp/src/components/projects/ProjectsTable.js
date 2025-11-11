@@ -122,10 +122,10 @@ export const ProjectsTable = ({
                     ? dayjs(project.endDate).format("YYYY-MM-DD")
                     : strings(stringKeys.project.list.ongoing)}
                 </TableCell>
-                <TableCell>{project.supervisorCount}</TableCell>
-                <TableCell>{project.totalDataCollectorCount}</TableCell>
-                <TableCell>{project.totalReportCount}</TableCell>
-                <TableCell>{project.escalatedAlertCount}</TableCell>
+                <TableCell align="center">{project.supervisorCount}</TableCell>
+                <TableCell align="center">{project.totalDataCollectorCount}</TableCell>
+                <TableCell align="center">{project.totalReportCount}</TableCell>
+                <TableCell align="center">{project.escalatedAlertCount}</TableCell>
                 <TableCell>
                   <TableRowActions directionRtl={rtl}>
                     <TableRowMenu

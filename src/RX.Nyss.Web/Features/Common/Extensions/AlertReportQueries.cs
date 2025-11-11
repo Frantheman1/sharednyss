@@ -19,7 +19,7 @@ public static class AlertReportQueries
             : alertReports;
 
     public static IQueryable<AlertReport> FilterByArea(this IQueryable<AlertReport> alertReports, AreaDto area) =>
-        area != null && area.RegionIds.Any()
+        area != null && (area.RegionIds.Any() || area.IncludeUnknownLocation)
             ? alertReports.Where(ar => area.RegionIds.Contains(ar.Report.RawReport.Village.District.Region.Id)
                 && area.DistrictIds.Contains(ar.Report.RawReport.Village.District.Id)
                 && area.VillageIds.Contains(ar.Report.RawReport.Village.Id)

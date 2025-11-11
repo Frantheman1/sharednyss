@@ -112,7 +112,7 @@ export const AlertsTable = ({
                   {dayjs(row.createdAt).format("YYYY-MM-DD HH:mm")}
                 </TableCell>
                 <TableCell>{row.healthRisk}</TableCell>
-                <TableCell>{row.reportCount}</TableCell>
+                <TableCell align="center">{row.reportCount}</TableCell>
                 <TableCell>
                   {[
                     row.lastReportRegion,

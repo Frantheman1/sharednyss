@@ -148,16 +148,16 @@ export const NationalSocietyCorrectReportsTable = ({
                   </Typography>
                 </TableCell>
               )}
-              <TableCell>
+              <TableCell align="center">
                 {renderReportValue(row.countMalesBelowFive, isDataCollectionPointTable)}
               </TableCell>
-              <TableCell>
+              <TableCell align="center">
                 {renderReportValue(row.countMalesAtLeastFive, isDataCollectionPointTable)}
               </TableCell>
-              <TableCell>
+              <TableCell align="center">
                 {renderReportValue(row.countFemalesBelowFive, isDataCollectionPointTable)}
               </TableCell>
-              <TableCell>
+              <TableCell align="center">
                 {renderReportValue(row.countFemalesAtLeastFive, isDataCollectionPointTable)}
               </TableCell>
               {isDataCollectionPointTable && (

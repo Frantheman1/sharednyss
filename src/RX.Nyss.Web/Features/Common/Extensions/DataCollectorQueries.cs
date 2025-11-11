@@ -25,7 +25,7 @@ namespace RX.Nyss.Web.Features.Common.Extensions
             };
 
         public static IQueryable<DataCollector> FilterByArea(this IQueryable<DataCollector> dataCollectors, AreaDto area) =>
-            area != null && area.RegionIds.Any()
+            area != null && (area.RegionIds.Any() || area.IncludeUnknownLocation)
                 ? dataCollectors.Where(dc => dc.DataCollectorLocations.Any(dcl =>
                         area.VillageIds.Contains(dcl.Village.Id)
                         && (dcl.Zone == null || area.ZoneIds.Contains(dcl.Zone.Id))

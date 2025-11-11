@@ -123,7 +123,9 @@ export const IncorrectReportsTable = ({
                 <TableCell>
                   {dayjs(row.dateTime).format("YYYY-MM-DD HH:mm")}
                 </TableCell>
-                <TableCell>{errorTypeString(row.reportErrorType)}</TableCell>
+                <TableCell>
+                  {errorTypeString(row.reportErrorType)}
+                </TableCell>
                 <TableCell>
                   <Typography className={styles.message} title={row.message}>
                     {dashIfEmpty(row.message)}

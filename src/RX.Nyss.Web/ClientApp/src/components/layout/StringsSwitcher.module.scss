@@ -1,12 +1,18 @@
 .stringSwitcher {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-left: 10px;
-  margin-bottom: 10px;
-  z-index: 9999;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1300; // Standard MUI Dialog z-index is 1300, keeping it at same level
 
   @media screen and (max-width: 1279px) {
     display: none;
+  }
+}
+
+.fab {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
   }
 }

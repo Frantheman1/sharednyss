@@ -37,7 +37,7 @@ namespace RX.Nyss.Web.Features.Common.Extensions
                 : alerts;
 
         public static IQueryable<Alert> FilterByArea(this IQueryable<Alert> alerts, AreaDto area) =>
-            area != null && area.RegionIds.Any()
+            area != null && (area.RegionIds.Any() || area.IncludeUnknownLocation)
                 ? alerts.Where(a => a.AlertReports.Any(ar => area.RegionIds.Contains(ar.Report.RawReport.Village.District.Region.Id)
                     && area.DistrictIds.Contains(ar.Report.RawReport.Village.District.Id)
                     && area.VillageIds.Contains(ar.Report.RawReport.Village.Id)
