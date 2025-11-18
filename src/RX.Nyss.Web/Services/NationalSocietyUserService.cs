@@ -8,6 +8,7 @@ using RX.Nyss.Common.Utils.Logging;
 using RX.Nyss.Data;
 using RX.Nyss.Data.Models;
 using RX.Nyss.Data.Queries;
+using RX.Nyss.Web.Configuration;
 using static RX.Nyss.Common.Utils.DataContract.Result;
 
 namespace RX.Nyss.Web.Services
@@ -27,14 +28,18 @@ namespace RX.Nyss.Web.Services
         private readonly ILoggerAdapter _loggerAdapter;
         private readonly IIdentityUserRegistrationService _identityUserRegistrationService;
         private readonly IDeleteUserService _deleteUserService;
+        private readonly IPhoneWhitelistService _phoneWhitelistService;
+        private readonly INyssWebConfig _config;
 
         public NationalSocietyUserService(INyssContext dataContext, ILoggerAdapter loggerAdapter, IIdentityUserRegistrationService identityUserRegistrationService,
-            IDeleteUserService deleteUserService)
+            IDeleteUserService deleteUserService, IPhoneWhitelistService phoneWhitelistService, INyssWebConfig config)
         {
             _dataContext = dataContext;
             _loggerAdapter = loggerAdapter;
             _identityUserRegistrationService = identityUserRegistrationService;
             _deleteUserService = deleteUserService;
+            _phoneWhitelistService = phoneWhitelistService;
+            _config = config;
         }
 
         public async Task<T> GetNationalSocietyUser<T>(int nationalSocietyUserId) where T : User
@@ -97,12 +102,22 @@ namespace RX.Nyss.Web.Services
                 var nationalSocietyUser = await GetNationalSocietyUserIncludingNationalSocieties<T>(nationalSocietyUserId);
                 await _deleteUserService.EnsureCanDeleteUser(nationalSocietyUserId, nationalSocietyUser.Role);
 
+                // Capture phone numbers before deletion
+                var phoneNumbers = new[] { nationalSocietyUser.PhoneNumber, nationalSocietyUser.AdditionalPhoneNumber };
+
                 DeleteNationalSocietyUser(nationalSocietyUser);
                 await _identityUserRegistrationService.DeleteIdentityUser(nationalSocietyUser.IdentityUserId);
 
                 await _dataContext.SaveChangesAsync();
 
                 transactionScope.Complete();
+
+                // Remove phone numbers from whitelist after successful deletion
+                if (_config.AutoWhitelistPhoneNumbers)
+                {
+                    await _phoneWhitelistService.RemovePhoneNumbers(phoneNumbers);
+                }
+
                 return Success();
             }
             catch (ResultException e)

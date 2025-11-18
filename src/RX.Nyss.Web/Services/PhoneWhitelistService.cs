@@ -15,6 +15,7 @@ namespace RX.Nyss.Web.Services
 	public interface IPhoneWhitelistService
 	{
 		Task AddPhoneNumbers(IEnumerable<string> phoneNumbers);
+		Task RemovePhoneNumbers(IEnumerable<string> phoneNumbers);
 	}
 
 	public class PhoneWhitelistService : IPhoneWhitelistService
@@ -66,7 +67,6 @@ namespace RX.Nyss.Web.Services
 				}
 				catch (RequestFailedException)
 				{
-					// Blob may not exist yet; we'll create it
 					existingContent = string.Empty;
 				}
 
@@ -102,6 +102,80 @@ namespace RX.Nyss.Web.Services
 			catch (Exception e)
 			{
 				_logger.Error("Failed to update phone whitelist: " + e.Message);
+				throw;
+			}
+		}
+
+		public async Task RemovePhoneNumbers(IEnumerable<string> phoneNumbers)
+		{
+			if (phoneNumbers == null)
+			{
+				return;
+			}
+
+			var normalized = phoneNumbers
+				.Where(n => !string.IsNullOrWhiteSpace(n))
+				.Select(n => n.Trim())
+				.Where(n => n.Length > 0)
+				.Distinct(StringComparer.Ordinal)
+				.ToList();
+
+			if (normalized.Count == 0)
+			{
+				return;
+			}
+
+			var blobName = _config.WhitelistedPhoneNumbersBlobObjectName;
+			if (string.IsNullOrWhiteSpace(blobName))
+			{
+				_logger.Warn("WhitelistedPhoneNumbersBlobObjectName is not configured. Skipping phone whitelist update.");
+				return;
+			}
+
+			try
+			{
+				var existingContent = string.Empty;
+				try
+				{
+					existingContent = await _blobProvider.GetBlobValue(blobName) ?? string.Empty;
+				}
+				catch (RequestFailedException)
+				{
+					// Blob doesn't exist, nothing to remove
+					return;
+				}
+
+				var existing = existingContent
+					.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(x => x.Trim())
+					.Where(x => x.Length > 0)
+					.ToHashSet(StringComparer.Ordinal);
+
+				var anyRemoved = false;
+				foreach (var number in normalized)
+				{
+					if (existing.Remove(number))
+					{
+						anyRemoved = true;
+					}
+				}
+
+				if (!anyRemoved)
+				{
+					return;
+				}
+
+				var newContent = new StringBuilder();
+				foreach (var number in existing.OrderBy(x => x, StringComparer.Ordinal))
+				{
+					newContent.AppendLine(number);
+				}
+
+				await _blobProvider.SetBlobValue(blobName, newContent.ToString());
+			}
+			catch (Exception e)
+			{
+				_logger.Error("Failed to remove phone numbers from whitelist: " + e.Message);
 				throw;
 			}
 		}

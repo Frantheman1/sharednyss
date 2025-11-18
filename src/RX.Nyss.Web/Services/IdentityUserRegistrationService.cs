@@ -34,9 +34,9 @@ namespace RX.Nyss.Web.Services
         private readonly INyssWebConfig _config;
         private readonly IEmailPublisherService _emailPublisherService;
         private readonly IEmailTextGeneratorService _emailTextGeneratorService;
-			private readonly IPhoneWhitelistService _phoneWhitelistService;
+		private readonly IPhoneWhitelistService _phoneWhitelistService;
 
-			public IdentityUserRegistrationService(UserManager<IdentityUser> userManager,
+		public IdentityUserRegistrationService(UserManager<IdentityUser> userManager,
 			ILoggerAdapter loggerAdapter, INyssWebConfig config, IEmailPublisherService emailPublisherService, INyssContext nyssContext, IEmailTextGeneratorService emailTextGeneratorService, IPhoneWhitelistService phoneWhitelistService)
         {
             _userManager = userManager;
@@ -45,7 +45,7 @@ namespace RX.Nyss.Web.Services
             _emailPublisherService = emailPublisherService;
             _nyssContext = nyssContext;
             _emailTextGeneratorService = emailTextGeneratorService;
-				_phoneWhitelistService = phoneWhitelistService;
+			_phoneWhitelistService = phoneWhitelistService;
         }
 
         public async Task<IdentityUser> CreateIdentityUser(string email, Role role)
