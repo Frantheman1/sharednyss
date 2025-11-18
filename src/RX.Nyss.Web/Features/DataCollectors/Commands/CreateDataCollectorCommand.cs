@@ -12,7 +12,9 @@ using RX.Nyss.Data;
 using RX.Nyss.Data.Concepts;
 using RX.Nyss.Data.Models;
 using RX.Nyss.Data.Queries;
+using RX.Nyss.Web.Configuration;
 using RX.Nyss.Web.Features.DataCollectors.Dto;
+using RX.Nyss.Web.Services;
 using RX.Nyss.Web.Utils;
 using static RX.Nyss.Common.Utils.DataContract.Result;
 
@@ -48,13 +50,19 @@ namespace RX.Nyss.Web.Features.DataCollectors.Commands
         {
             private readonly INyssContext _nyssContext;
             private readonly IDateTimeProvider _dateTimeProvider;
+            private readonly IPhoneWhitelistService _phoneWhitelistService;
+            private readonly INyssWebConfig _config;
 
             public Handler(
                 INyssContext nyssContext,
-                IDateTimeProvider dateTimeProvider)
+                IDateTimeProvider dateTimeProvider,
+                IPhoneWhitelistService phoneWhitelistService,
+                INyssWebConfig config)
             {
                 _nyssContext = nyssContext;
                 _dateTimeProvider = dateTimeProvider;
+                _phoneWhitelistService = phoneWhitelistService;
+                _config = config;
             }
 
             public async Task<Result> Handle(CreateDataCollectorCommand command, CancellationToken cancellationToken)
@@ -114,6 +122,12 @@ namespace RX.Nyss.Web.Features.DataCollectors.Commands
 
                 await _nyssContext.AddAsync(dataCollector, cancellationToken);
                 await _nyssContext.SaveChangesAsync(cancellationToken);
+
+                if (_config.AutoWhitelistPhoneNumbers)
+                {
+                    await _phoneWhitelistService.AddPhoneNumbers(new[] { command.PhoneNumber, command.AdditionalPhoneNumber });
+                }
+
                 return Success(ResultKey.DataCollector.CreateSuccess);
             }
 

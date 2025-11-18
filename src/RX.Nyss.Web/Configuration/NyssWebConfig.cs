@@ -16,6 +16,10 @@ namespace RX.Nyss.Web.Configuration
 
         string AuthorizedApiKeysBlobObjectName { get; set; }
 
+				string WhitelistedPhoneNumbersBlobObjectName { get; set; }
+
+				bool AutoWhitelistPhoneNumbers { get; set; }
+
         int PaginationRowsPerPage { get; set; }
 
         string FeedbackReceiverEmail { get; set; }
@@ -56,6 +60,10 @@ namespace RX.Nyss.Web.Configuration
         public string GeneralBlobContainerName { get; set; }
 
         public string AuthorizedApiKeysBlobObjectName { get; set; }
+
+				public string WhitelistedPhoneNumbersBlobObjectName { get; set; }
+
+				public bool AutoWhitelistPhoneNumbers { get; set; }
 
         public string StringsResourcesBlobObjectName { get; set; }
 
