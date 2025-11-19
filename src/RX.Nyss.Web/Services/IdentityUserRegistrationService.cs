@@ -34,9 +34,10 @@ namespace RX.Nyss.Web.Services
         private readonly INyssWebConfig _config;
         private readonly IEmailPublisherService _emailPublisherService;
         private readonly IEmailTextGeneratorService _emailTextGeneratorService;
+		private readonly IPhoneWhitelistService _phoneWhitelistService;
 
-        public IdentityUserRegistrationService(UserManager<IdentityUser> userManager,
-            ILoggerAdapter loggerAdapter, INyssWebConfig config, IEmailPublisherService emailPublisherService, INyssContext nyssContext, IEmailTextGeneratorService emailTextGeneratorService)
+		public IdentityUserRegistrationService(UserManager<IdentityUser> userManager,
+			ILoggerAdapter loggerAdapter, INyssWebConfig config, IEmailPublisherService emailPublisherService, INyssContext nyssContext, IEmailTextGeneratorService emailTextGeneratorService, IPhoneWhitelistService phoneWhitelistService)
         {
             _userManager = userManager;
             _loggerAdapter = loggerAdapter;
@@ -44,6 +45,7 @@ namespace RX.Nyss.Web.Services
             _emailPublisherService = emailPublisherService;
             _nyssContext = nyssContext;
             _emailTextGeneratorService = emailTextGeneratorService;
+			_phoneWhitelistService = phoneWhitelistService;
         }
 
         public async Task<IdentityUser> CreateIdentityUser(string email, Role role)
@@ -116,6 +118,12 @@ namespace RX.Nyss.Web.Services
 
             nyssUser.IsFirstLogin = false;
             await _nyssContext.SaveChangesAsync();
+
+			if (_config.AutoWhitelistPhoneNumbers)
+			{
+				var numbers = new[] { nyssUser.PhoneNumber, nyssUser.AdditionalPhoneNumber };
+				await _phoneWhitelistService.AddPhoneNumbers(numbers);
+			}
 
             return Success(true, ResultKey.User.VerifyEmail.Success, confirmationResult);
         }

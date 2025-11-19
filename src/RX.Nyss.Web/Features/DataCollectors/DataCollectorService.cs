@@ -16,6 +16,7 @@ using RX.Nyss.Web.Features.Common.Extensions;
 using RX.Nyss.Web.Features.DataCollectors.Dto;
 using RX.Nyss.Web.Features.NationalSocietyStructure;
 using RX.Nyss.Web.Features.NationalSocietyStructure.Dto;
+using RX.Nyss.Web.Services;
 using RX.Nyss.Web.Services.Authorization;
 using RX.Nyss.Web.Services.Geolocation;
 using RX.Nyss.Web.Utils.DataContract;
@@ -63,18 +64,22 @@ namespace RX.Nyss.Web.Features.DataCollectors
 
         private readonly INyssWebConfig _config;
 
+        private readonly IPhoneWhitelistService _phoneWhitelistService;
+
         public DataCollectorService(
             INyssContext nyssContext,
             INyssWebConfig config,
             INationalSocietyStructureService nationalSocietyStructureService,
             IGeolocationService geolocationService,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IPhoneWhitelistService phoneWhitelistService)
         {
             _nyssContext = nyssContext;
             _config = config;
             _nationalSocietyStructureService = nationalSocietyStructureService;
             _geolocationService = geolocationService;
             _authorizationService = authorizationService;
+            _phoneWhitelistService = phoneWhitelistService;
         }
 
         public async Task<Result<GetDataCollectorResponseDto>> Get(int dataCollectorId)
@@ -344,6 +349,9 @@ namespace RX.Nyss.Web.Features.DataCollectors
 
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
+                // Capture phone numbers before deletion/anonymization
+                var phoneNumbers = new[] { dataCollector.dc.PhoneNumber, dataCollector.dc.AdditionalPhoneNumber };
+
                 if (dataCollector.HasReports)
                 {
                     await Anonymize(dataCollectorId);
@@ -355,6 +363,12 @@ namespace RX.Nyss.Web.Features.DataCollectors
 
                 await _nyssContext.SaveChangesAsync();
                 transactionScope.Complete();
+
+                // Remove phone numbers from whitelist after successful deletion
+                if (_config.AutoWhitelistPhoneNumbers)
+                {
+                    await _phoneWhitelistService.RemovePhoneNumbers(phoneNumbers);
+                }
             }
 
             return SuccessMessage(ResultKey.DataCollector.RemoveSuccess);
